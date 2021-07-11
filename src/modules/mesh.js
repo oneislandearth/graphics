@@ -52,10 +52,7 @@ export class Mesh {
     mat4.rotate(model, model, this.angle * (Math.PI / 4), [0, 1, 0]);
 
     // Rotate around the z axis
-    mat4.rotate(model, model, (Math.PI / 2), [1, 0, 0]);
-
-    // Rotate around the x axis
-    mat4.rotate(model, model, (Math.PI), [0, 0, 1]);
+    mat4.rotate(model, model, this.angle * (Math.PI / 4), [0, 0, 1]);
 
     // Return the model matrix
     return model;
@@ -227,14 +224,35 @@ export class Mesh {
       animation.animate(this, delta);
     }
 
+    // Define the model view matrix
+    const modelView = mat4.create();
+    
+    // Compute the model view matrix
+    mat4.multiply(modelView, this.scene.camera.view, this.transforms);
+
+    // Define the normal matrix
+    const normalMatrix = mat3.create();
+
+    // Compute the normal matrix
+    mat3.normalFromMat4(normalMatrix, modelView);
+
     // Update the mesh model transforms
     context.uniformMatrix4fv(this.material.locations.model, false, this.transforms);
 
     // Update the camera view
     context.uniformMatrix4fv(this.material.locations.view, false, this.scene.camera.view);
 
-    // Update the camera project
+    // Update the camera projection
     context.uniformMatrix4fv(this.material.locations.projection, false, this.scene.camera.projection);
+
+    // Update the normal matrix
+    context.uniformMatrix3fv(this.material.locations.normalMatrix, false, normalMatrix); 
+
+    // Update the mesh source lighting
+    context.uniform3fv(this.material.locations.light, unit([2, 2, 2]));
+
+    // Update the mesh color
+    context.uniform4fv(this.material.locations.color, [0.8, 0.8, 0.8, 1]);
 
     // Bind the positions from the buffer
     context.bindBuffer(context.ARRAY_BUFFER, this.buffers.positions);

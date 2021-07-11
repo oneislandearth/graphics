@@ -1,11 +1,19 @@
 precision mediump float;
 
+// Define the mesh color
+uniform vec4 color;
+
+// Define the light position
+uniform vec3 light;
+
+// The normal of the vector
 varying vec3 vNormal;
 
 void main() {
+  
+  // Compute the surface brightness
+  float surfaceBrightness = max(0.0, dot(normalize(vNormal), light));
 
-  // Normals are ranged -1 to 1. Transform it to 0 to 1
-  vec3 adjustedNormal = normalize(vNormal) * 0.5;
-
-  gl_FragColor = vec4(adjustedNormal, 1.0);
+  // Bind the color
+  gl_FragColor = vec4(color.xyz * surfaceBrightness, color.w);
 }

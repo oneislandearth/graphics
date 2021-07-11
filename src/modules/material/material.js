@@ -95,12 +95,14 @@ export class Material {
 
     // Define the locations
     return {
-      model: context.getUniformLocation(this.shader, `model`),
+      model: context.getUniformLocation(this.shader, 'model'),
       view: context.getUniformLocation(this.shader, 'view'),
-      projection: context.getUniformLocation(this.shader, `projection`),
-      lighting: context.getUniformLocation(this.shader, `lighting`),
-      position: context.getAttribLocation(this.shader, `position`),
-      normal: context.getAttribLocation(this.shader, `normal`)
+      projection: context.getUniformLocation(this.shader, 'projection'),
+      normalMatrix: context.getUniformLocation(this.shader, 'normalMatrix'),
+      light: context.getUniformLocation(this.shader, 'light'),
+      color: context.getUniformLocation(this.shader, 'color'),
+      position: context.getAttribLocation(this.shader, 'position'),
+      normal: context.getAttribLocation(this.shader, 'normal')
     };
   }
 }
