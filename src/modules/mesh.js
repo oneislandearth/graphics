@@ -1,0 +1,255 @@
+// Import the color material
+import { Material } from './material/material';
+
+// Import the required math functions
+import { unit, cross, subtract, equal } from './math';
+
+// Define the mesh
+export class Mesh {
+
+  constructor(name, { vertices, faces, scene, ...options }) {
+
+    // Bind the name
+    this.name = name;
+
+    // Bind the scene
+    this.scene = scene;
+
+    // Create the default material
+    this.material = new Material(`${name}-material`, this.scene);
+
+    // Define the position
+    this.position = (options.position ? options.position : [0, 0, -4]);
+
+    // Define the rotation
+    this.angle = 1;
+
+    // Define the meshes
+    this.animations = [];
+
+    // Update the data
+    this.update({ vertices, faces });
+    
+    // Store this mesh in the scene meshes
+    this.scene.meshes.push(this);
+  }
+
+  // Rotate the y axis
+  rotate() {
+    this.angle += (((Math.PI * 2) / 360) * 1);
+  }
+
+  // Return the identity matrix for transforms
+  get transforms() {
+
+    // Create an identity matrix
+    const model = mat4.create();
+
+    // Translate the position to the model position
+    mat4.translate(model, model, this.position);
+    
+    // Rotate around the y axis
+    mat4.rotate(model, model, this.angle * (Math.PI / 4), [0, 1, 0]);
+
+    // Rotate around the z axis
+    mat4.rotate(model, model, (Math.PI / 2), [1, 0, 0]);
+
+    // Rotate around the x axis
+    mat4.rotate(model, model, (Math.PI), [0, 0, 1]);
+
+    // Return the model matrix
+    return model;
+  }
+
+  // Bind the data for the faces
+  update({ vertices, faces }) {
+
+    // Bind the vertices
+    this.vertices = vertices;
+
+    // Bind the faces
+    this.faces = faces;
+
+    // Define the positions
+    this.positions = [];
+
+    // Define the normals
+    this.normals = [];
+
+    // Define the indices
+    this.indices = [];
+
+    // Add the position and normal
+    const addPosition = (vertex, normal) => {
+
+      // Extract the vertex components
+      const [vx, vy, vz] = vertex;
+
+      // Extract the normal components
+      const [nx, ny, nz] = normal;
+      
+      // Iterate through the existing positions
+      for (let i = 0; i < this.positions.length; i++) {
+
+        // Extract the position components
+        const [px, py, pz] = this.positions[i];
+
+        // Check if the vertex matches the position
+        if (equal(px, vx) && equal(py, vy) && equal(pz, vz)) {
+
+          // Extract the components of the normal of the stored position
+          const [vnx, vny, vnz] = this.normals[i];
+
+          // Check if the planes match for the vertex
+          if (equal(vnx, nx) && equal(vny, ny) && equal(vnz, nz)) {
+
+            // Return the index of this vertex as it has already been computed for this plane
+            return i;
+          }
+        }
+      }
+
+      // Store the normal
+      this.normals.push(normal);
+
+      // Store the vertex and return the index
+      return (this.positions.push(vertex) - 1);
+    };
+
+    // Iterate through the faces extracting the face indexes
+    for (const [f0, f1, f2] of this.faces) {
+
+      // Extract the vertices
+      const v0 = this.vertices[f0];
+      const v1 = this.vertices[f1];
+      const v2 = this.vertices[f2];
+
+      // Extract the vector components
+      const [v0x, v0y, v0z] = v0;
+      const [v1x, v1y, v1z] = v1;
+      const [v2x, v2y, v2z] = v2;
+
+      // Compute the new vectors
+      const v0v2 = [subtract(v0x, v2x), subtract(v0y, v2y), subtract(v0z, v2z)];
+      const v1v2 = [subtract(v1x, v2x), subtract(v1y, v2y), subtract(v1z, v2z)];
+
+      // Compute the unit vector using the unit of the cross product of the new vectors
+      const normal = unit(cross(v0v2, v1v2));
+
+      // Add the vertices to the positions (one for each face)
+      const iv0 = addPosition(v0, normal);
+      const iv1 = addPosition(v1, normal);
+      const iv2 = addPosition(v2, normal);
+
+      // Add the position indexes to the indices
+      this.indices.push(iv0, iv1, iv2);
+    }
+  }
+
+  // Generate the face from vertex data
+  static fromVertexData({ positions, normals, indices }) {
+
+    // Bind the positions
+    this.positions = positions;
+
+    // Bind the normals
+    this.normals = normals;
+
+    // Bind the indices
+    this.indices = indices;
+  }
+
+  // Define the buffers
+  get buffers() {
+
+    // Select the engine context
+    const context = this.scene.context;
+
+    // Create the positions buffer
+    const positionsBuffer = context.createBuffer();
+
+    // Bind the positions buffer
+    context.bindBuffer(context.ARRAY_BUFFER, positionsBuffer);
+    
+    // Add the positions data to the positions buffer
+    context.bufferData(context.ARRAY_BUFFER, new Float32Array(this.positions.flat()), context.STATIC_DRAW);
+
+    // Create the normals buffer
+    const normalsBuffer = context.createBuffer();
+    
+    // Bind the positions buffer
+    context.bindBuffer(context.ARRAY_BUFFER, normalsBuffer);
+    
+    // Add the normals data to the normals buffer
+    context.bufferData(context.ARRAY_BUFFER, new Float32Array(this.normals.flat()), context.STATIC_DRAW);
+    
+    // Define the indices buffer
+    const indicesBuffer = context.createBuffer();
+    
+    // Bind the indices buffer
+    context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, indicesBuffer);
+    
+    // Add the indices data to the indices buffer
+    context.bufferData(context.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), context.STATIC_DRAW);
+
+    // Return the buffers
+    return {
+      positions: positionsBuffer,
+      normals: normalsBuffer,
+      indices: indicesBuffer
+    };
+  }
+
+  // Define the add material class
+  addMaterial(material) {
+
+    // Bind the material
+    this.material = material;
+  }
+
+  // Add the animation
+  addAnimation(animation) {
+
+    // Bind the animation
+    this.animations.push(animation);
+  }
+
+  // Define the render function which is called on the animation event
+  render(delta) {
+
+    // Select the context from the scene
+    const context = this.scene.context;
+
+    // Apply all the animations
+    for (const animation of this.animations) {
+
+      // Run the animation on the mesh
+      animation.animate(this, delta);
+    }
+
+    // Update the mesh model transforms
+    context.uniformMatrix4fv(this.material.locations.model, false, this.transforms);
+
+    // Update the camera view
+    context.uniformMatrix4fv(this.material.locations.view, false, this.scene.camera.view);
+
+    // Update the camera project
+    context.uniformMatrix4fv(this.material.locations.projection, false, this.scene.camera.projection);
+
+    // Bind the positions from the buffer
+    context.bindBuffer(context.ARRAY_BUFFER, this.buffers.positions);
+    context.enableVertexAttribArray(this.material.locations.position);
+    context.vertexAttribPointer(this.material.locations.position, 3, context.FLOAT, false, 0, 0);
+
+    // Bind the normals from the buffer
+    context.bindBuffer(context.ARRAY_BUFFER, this.buffers.normals);
+    context.enableVertexAttribArray(this.material.locations.normal);
+    context.vertexAttribPointer(this.material.locations.normal, 3, context.FLOAT, false, 0, 0);
+
+    // Bind the indices from the buffer
+    context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
+
+    // Draw each of the faces within the mesh
+    context.drawElements(context.TRIANGLES, this.indices.length, context.UNSIGNED_SHORT, 0);
+  }
+}

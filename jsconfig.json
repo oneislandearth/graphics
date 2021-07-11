@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "paths": {
+      "~lib/*": ["./lib"],
+      "~src/*": ["./src"],
+      "~service/*": ["./service/src"],
+      "~client/*": ["./client/src"],
+    }
+  },
+  "exclude": [
+    "node_modules", 
+    "lib", "dist", "build", 
+    "client/lib", "client/dist",
+    "service/lib", "service/dist"
+  ]
+}

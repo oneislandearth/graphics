@@ -1,0 +1,18 @@
+# Travis configuration
+.travis.yml
+
+# Webpack configuration
+webpack.config.js
+
+# Eslint configuration
+.eslint
+
+# Vscode configuration
+.vscode
+jsconfig.json
+
+# Source files
+src
+
+# Sourcemap files
+lib/*.map

@@ -1,0 +1,37 @@
+{
+  "name": "@oneisland/graphics",
+  "version": "0.0.1",
+  "private": false,
+  "description": "A fast and lightweight 3D graphics engine for the web",
+  "keywords": [
+    "graphics",
+    "webgl",
+    "oneisland"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "module-packer build",
+    "prepublishOnly": "npm run build",
+    "prepublish": "npm run build",
+    "serve": "module-packer serve",
+    "watch": "module-packer watch"
+  },
+  "devDependencies": {
+    "@oneisland/math": "^0.0.4",
+    "@oneisland/module-packer": "^0.0.16",
+    "@oneisland/worker-module": "^0.0.2",
+    "raw-loader": "^4.0.2"
+  },
+  "homepage": "https://github.com/oneislandearth/graphics#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oneislandearth/graphics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oneislandearth/graphics/issues"
+  },
+  "contributors": [
+    "Daniel Larkin <daniel@oneisland.io>"
+  ],
+  "license": "MIT"
+}

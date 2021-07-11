@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>    
+    <meta charset="utf-8">
+    <title>@oneisland/graphics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Load the dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js" defer></script>
+
+    <!-- Load the engine  -->
+    <script src="./dist/bundle.js" defer></script>
+
+    <!-- Define the cube data -->
+    <script src="./cube.js" defer></script>
+
+    <!-- Create an engine -->
+    <script src="./engine.js" defer></script>
+
+    <!-- Define the styling -->
+    <style>
+      html, body {
+        width: 100vw;
+        height: 100vh;
+        padding: 0;
+        margin: 0;
+      }
+      canvas {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Define the element to bind the engine to -->
+    <canvas id="engine"></canvas>
+  </body>
+</html>

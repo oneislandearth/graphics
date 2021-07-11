@@ -1,0 +1,28 @@
+# Symlinked .eslintrc.js
+.eslintrc*
+
+# MacOS files
+.DS_Store
+
+# Node directories
+node_modules
+
+# Local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Other editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+
+# Sourcemap files
+# lib/*.map
