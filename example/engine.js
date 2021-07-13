@@ -15,7 +15,5 @@ const engine = new Engine('#engine', async({ canvas, context }) => {
 
   // Return the scene
   return scene;
-});
-
-// Show the frames per second
-engine.showFPS();
+  
+}, { fps: true });

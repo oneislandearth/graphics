@@ -5,7 +5,7 @@
 export class Engine {
   
   // Define the engine
-  constructor(canvas, scene) {
+  constructor(canvas, scene, options) {
 
     // Bind the name
     this.name = `@oneisland/graphics`;
@@ -70,6 +70,9 @@ export class Engine {
 
     // Run the render loop
     requestAnimationFrame(render);
+
+    // Handle the options
+    if (options && options.fps) this.showFPS();
   }
 
   // Show the fps
