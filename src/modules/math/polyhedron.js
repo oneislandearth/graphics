@@ -5,21 +5,29 @@ import { vec3 } from './vec3';
 import { polygon } from './polygon';
 
 // Define a polyhedron logic
-export const polyhedron = {};
+export const polyhedron = (vertices, faces) => (
+  mapKeys(faces, vertices)
+);
+
+// Compute the area of a polyhedron
+polyhedron.area = (polygons) => (
+  sum(
+    map(polygons, ([a, b, c]) => (
+      polygon.area([a, b, c])
+    ))
+  )
+);
 
 // Compute the volume of a polyhedron
-polyhedron.volume = (vertices, faces) => (
+polyhedron.volume = (polygons) => (
   third(
     sum(
-      map(
-        mapKeys(faces, vertices), 
-        ([a, b, c]) => (
-          multiply(
-            vec3.dot(a, polygon.normal([a, b, c])),
-            polygon.area([a, b, c])
-          )
+      map(polygons, ([a, b, c]) => (
+        multiply(
+          vec3.dot(a, polygon.normal([a, b, c])),
+          polygon.area([a, b, c])
         )
-      )
+      ))
     )
   )
 );
@@ -52,4 +60,7 @@ const faces = [
   [5, 6, 7]
 ];
 
-polyhedron.volume(vertices, faces);
+const poly = polyhedron(vertices, faces);
+
+polyhedron.volume(poly);
+polyhedron.area(poly);
