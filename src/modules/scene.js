@@ -24,34 +24,39 @@ export class Scene {
     // Bind the default camera
     this.camera = new Camera('camera', { scene: this });
 
-    // // Define the clear color
-    context.clearColor(0.0, 0.0, 1.0, 1);
-
-    // // Clear the depth
-    // context.clearDepth(0);
 
     // // Enable depth testing
     context.enable(context.DEPTH_TEST);
     
     // // Allow close items to obscure far items
-    // context.depthFunc(context.LEQUAL);
-  
-    // // Clear the canvas before use
-    // context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
+    context.depthFunc(context.LEQUAL);
+    // Context.depthRange(0, 1);
+    // context.depthMask(true);
+
+    context.clearColor(0, 0, 0, 0);
+
+    // Clear the canvas AND the depth buffer.
+    context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
+
+    // Context.enable(context.CULL_FACE);
+    // context.cullFace(context.BACK);
+
+    // Generate the world matrix
+    this.world = mat4.create();
 
     // Render the scene
     this.render();
   }
 
-  // Return the identity matrix for transforms
-  get transforms() {
-    return new Float32Array([
-      1, 0, 0, 0, 
-      0, 1, 0, 0, 
-      0, 0, 1, 0,
-      0, 0, 0, 1
-    ]);
-  }
+  // // Return the identity matrix for transforms
+  // get world() {
+  //   return new Float32Array([
+  //     1, 0, 0, 0, 
+  //     0, 1, 0, 0, 
+  //     0, 0, 1, 0,
+  //     0, 0, 0, 1
+  //   ]);
+  // }
 
   // Add a mesh
   addMesh(mesh) {

@@ -70,3 +70,10 @@ export const unit = (value) => {
   // Return the unitized vector
   return value.map(v => v / magnitude);
 };
+
+// Clamp a value between min and max
+export const clamp = (a, min, max) => Math.min(Math.max(a, min), max);
+
+// Define the trig functions
+export const cos = (a) => Math.cos(a);
+export const sin = (a) => Math.sin(a);

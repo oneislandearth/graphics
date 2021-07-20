@@ -95,6 +95,7 @@ export class Material {
 
     // Define the locations
     return {
+      world: context.getUniformLocation(this.shader, 'world'),
       model: context.getUniformLocation(this.shader, 'model'),
       view: context.getUniformLocation(this.shader, 'view'),
       projection: context.getUniformLocation(this.shader, 'projection'),

@@ -19,7 +19,7 @@ export class Mesh {
     this.material = new Material(`${name}-material`, this.scene);
 
     // Define the position
-    this.position = (options.position ? options.position : [0, 0, -4]);
+    this.position = (options.position ? options.position : [0, 0, 0]);
 
     // Define the rotation
     this.angle = 1;
@@ -39,8 +39,8 @@ export class Mesh {
     this.angle += (((Math.PI * 2) / 360) * 1);
   }
 
-  // Return the identity matrix for transforms
-  get transforms() {
+  // Return model matrix for transforms
+  get model() {
 
     // Create an identity matrix
     const model = mat4.create();
@@ -49,10 +49,10 @@ export class Mesh {
     mat4.translate(model, model, this.position);
     
     // Rotate around the y axis
-    mat4.rotate(model, model, this.angle * (Math.PI / 4), [0, 1, 0]);
+    // mat4.rotate(model, model, (Math.PI / 4), [0, 1, 0]);
 
-    // Rotate around the z axis
-    mat4.rotate(model, model, this.angle * (Math.PI / 4), [0, 0, 1]);
+    // // // Rotate around the z axis
+    // mat4.rotate(model, model, (Math.PI / 4), [0, 0, 1]);
 
     // Return the model matrix
     return model;
@@ -226,18 +226,22 @@ export class Mesh {
 
     // Define the model view matrix
     const modelView = mat4.create();
-    
+
     // Compute the model view matrix
-    mat4.multiply(modelView, this.scene.camera.view, this.transforms);
+    mat4.multiply(modelView, this.scene.camera.view, this.model);
 
     // Define the normal matrix
-    const normalMatrix = mat3.create();
+    const normalMatrix = mat4.create();
 
     // Compute the normal matrix
-    mat3.normalFromMat4(normalMatrix, modelView);
+    mat4.invert(normalMatrix, modelView);
+    mat4.transpose(normalMatrix, normalMatrix);
+
+    // Update the world transforms
+    context.uniformMatrix4fv(this.material.locations.world, false, this.scene.world);
 
     // Update the mesh model transforms
-    context.uniformMatrix4fv(this.material.locations.model, false, this.transforms);
+    context.uniformMatrix4fv(this.material.locations.model, false, this.model);
 
     // Update the camera view
     context.uniformMatrix4fv(this.material.locations.view, false, this.scene.camera.view);
@@ -246,10 +250,10 @@ export class Mesh {
     context.uniformMatrix4fv(this.material.locations.projection, false, this.scene.camera.projection);
 
     // Update the normal matrix
-    context.uniformMatrix3fv(this.material.locations.normalMatrix, false, normalMatrix); 
+    context.uniformMatrix4fv(this.material.locations.normalMatrix, false, normalMatrix); 
 
     // Update the mesh source lighting
-    context.uniform3fv(this.material.locations.light, unit([2, 2, 2]));
+    context.uniform3fv(this.material.locations.light, unit([0, 2, 2]));
 
     // Update the mesh color
     context.uniform4fv(this.material.locations.color, [0.8, 0.8, 0.8, 1]);

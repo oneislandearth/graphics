@@ -1,3 +1,9 @@
+// Import the required math
+import { add, multiply, sin, cos } from './math';
+
+// Import the input handler
+import { cameraInputManager } from './inputs/camera-2';
+
 // Describe the basic field of view camera
 export class Camera {
 
@@ -10,17 +16,23 @@ export class Camera {
     // Bind the scence
     this.scene = scene;
 
-    // Bind the field of view
-    this.fov = options.fov ? options.fov : Math.PI * 0.5;
+    // Bind the field of view (60 deg)
+    this.fov = options.fov || Math.PI * 0.25;
 
     // Bind the near clipping plane distance
-    this.near = options.near | 1;
+    this.near = options.near || 0.01;
 
     // Bind the far clipping plane distance
-    this.far = options.far | 200;
+    this.far = options.far || 1000;
 
-    // Bind the zoom scale
-    this.scale = 1;
+    // Bind the radius
+    this.radius = options.radius || 20;
+
+    // Bind the alpha angle
+    this.alpha = 0;
+
+    // Bind the beta angle
+    this.beta = (Math.PI / 8);
 
     // Define the min zoom range
     this.min = (this.scale / 2);
@@ -29,10 +41,16 @@ export class Camera {
     this.max = (this.scale * 2);  
 
     // Define the camera position
-    this.position = [0, 0, 0];
+    this.origin = [0, 0, 0];
+
+    // Define the camera target
+    this.target = [0, 0, 0];
+
+    // Define the current zoom
+    this.zoom = 1;
 
     // Handle mousewheel zoom
-    this.scene.canvas.addEventListener('wheel', (e) => this.zoom(e.wheelDelta * 0.0001));
+    cameraInputManager(this);
   }
 
   // Define the aspect ratio
@@ -42,21 +60,25 @@ export class Camera {
     return (this.scene.context.drawingBufferWidth / this.scene.context.drawingBufferHeight);
   }
 
-  // Return the view matrix
+  // Compute the eye for the camera
+  get eye() {
+
+    // Compute the radius (as an exponential would be faster)
+    const radius = this.radius;
+
+    // Compute the new eye values
+    return [
+      add(this.target[0], multiply(radius, multiply(cos(this.alpha), cos(this.beta)))),
+      add(this.target[1], multiply(radius, sin(this.beta))),
+      add(this.target[2], multiply(radius, multiply(sin(this.alpha), cos(this.beta))))
+    ];
+  }
+
+  // Define the camera matrix
   get view() {
 
-    // Select the zoom scale
-    const s = this.scale;
-
-    // Select the position
-    const [x, y, z] = this.position;
-
-    return new Float32Array([
-      s, 0, 0, 0,
-      0, s, 0, 0,
-      0, 0, s, 0,
-      x, y, z, 1
-    ]);
+    // Compute and return the look at camera matrix
+    return mat4.lookAt(new Float32Array(16), this.eye, this.target, [0, 1, 0]);
   }
 
   // Return the camera projection matrix

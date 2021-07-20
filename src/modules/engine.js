@@ -30,6 +30,7 @@ export class Engine {
     
     // Create the context
     this.context = this.canvas.getContext('webgl2');
+    // , { preserveDrawingBuffer: true });
 
     // Throw an error if there is no context
     if (!this.context) throw new Error('WebGL2 is not supported by your browser');
