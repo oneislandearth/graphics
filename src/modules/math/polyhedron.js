@@ -1,26 +1,55 @@
-import { multiply, dot, divide3, sum, map, polygon } from './core';
+import { multiply, third, sum, map, mapKeys } from './core';
+
+// Import the vec3 modules
+import { vec3 } from './vec3';
+import { polygon } from './polygon';
 
 // Define a polyhedron logic
-const polyhedron = {};
+export const polyhedron = {};
 
 // Compute the volume of a polyhedron
-polyhedron.volume = ({ vertices, faces }) => (
-  divide3(
+polyhedron.volume = (vertices, faces) => (
+  third(
     sum(
-      map(faces, ([a, b, c]) => (
-        multiply(
-          dot(a, polygon.normal([a, b, c])),
-          polygon.area([a, b, c])
+      map(
+        mapKeys(faces, vertices), 
+        ([a, b, c]) => (
+          multiply(
+            vec3.dot(a, polygon.normal([a, b, c])),
+            polygon.area([a, b, c])
+          )
         )
-      ))
+      )
     )
   )
 );
 
-//   // Compute all of the face normals
+// Define the vertices for the cube
+const vertices = [
+  [-1, -1, 1],
+  [ 1, -1, 1],
+  [ 1, -1, -1],
+  [-1, -1, -1],
+  [-1, 1, 1],
+  [ 1, 1, 1],
+  [ 1, 1, -1],
+  [-1, 1, -1]
+];
 
-// }
+// Define the faces for the cube
+const faces = [
+  [2, 3, 0],
+  [0, 1, 2],
+  [0, 3, 7],
+  [7, 4, 0],
+  [4, 0, 1],
+  [1, 5, 4],
+  [3, 2, 6],
+  [6, 7, 3],
+  [5, 1, 2],
+  [2, 6, 5],
+  [7, 4, 5],
+  [5, 6, 7]
+];
 
-//   // 
-//   divide(this.faces.reduce((sum, face) => add(sum, multiply(dot(face.a, face.normal), Number(face.area))), 0), 3);
-// }
+polyhedron.volume(vertices, faces);

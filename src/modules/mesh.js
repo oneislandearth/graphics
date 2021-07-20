@@ -2,7 +2,7 @@
 import { Material } from './material/material';
 
 // Import the required math functions
-import { unit, cross, subtract, equal, vec3, gon3, polyhedron } from './math';
+import { unit, cross, equal, vec3, polyhedron } from './math';
 
 // Define the mesh
 export class Mesh {
@@ -121,10 +121,6 @@ export class Mesh {
 
       // Compute the unit vector using the unit of the cross product of the new vectors
       const normal = unit(cross(v0v2, v1v2));
-
-      console.log(normal);
-
-      console.log(gon3.area([v0, v1, v2]));
 
       if (normal.find(v => v == -1)) continue;
 

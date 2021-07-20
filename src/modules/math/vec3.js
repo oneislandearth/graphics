@@ -1,5 +1,5 @@
-// Import the required core functions
-import { add, subtract, multiply, divide, sum } from './core';
+// Import the required core functions;
+import { add, subtract, multiply, divide, sum, sqrt, square, map, acos } from './core';
 
 // Vectorizes an operation
 const vectorize = (operation) => (a, b) => ([
@@ -9,7 +9,31 @@ const vectorize = (operation) => (a, b) => ([
 ]); 
 
 // Define the vec3 functions
-export const vec3 = {};
+export const vec3 = (x, y, z) => ([x || 0, y || 0, z || 0]);
+
+// Define the zeroes function
+vec3.zeros = [0, 0, 0];
+
+// Define the ones function
+vec3.ones = [1, 1, 1];
+
+// Define the right function
+vec3.right = [1, 0, 0];
+
+// Define the left function
+vec3.left = [-1, 0, 0];
+
+// Define the up function
+vec3.up = [0, 1, 0];
+
+// Define the down function
+vec3.down = [0, -1, 0];
+
+// Define the back function
+vec3.back = [0, 0, 1];
+
+// Define the forward function
+vec3.forward = [0, 0, -1];
 
 // Define the add function
 vec3.add = (a, b) => vectorize(add)(a, b);
@@ -22,6 +46,28 @@ vec3.multiply = (a, b) => vectorize(multiply)(a, b);
 
 // Define the divide function
 vec3.divide = (a, b) => vectorize(divide)(a, b);
+
+// Define the function to expand a scalar value to a vec3
+vec3.expand = (scalar) => [scalar, scalar, scalar];
+
+// Define the magnitude / norm of a vector
+vec3.magnitude = (a) => (
+  sqrt(
+    sum(
+      map(a, v => square(v))
+    )
+  )
+);
+
+// Define the unit of a vector
+vec3.unit = (a) => (
+  vec3.divide(
+    a,
+    vec3.expand(
+      vec3.magnitude(a)
+    )
+  )
+);
 
 // Define the dot product function
 vec3.dot = (a, b) => (
@@ -50,4 +96,15 @@ vec3.cross = (a, b) => (
   )
 )(a, b);
 
-vec3.cross([10, 10, 10], [10, 10, 5]);
+// Compute the angles between two vectors
+vec3.angle = (a, b) => (
+  acos(
+    divide(
+      vec3.dot(a, b),
+      multiply(
+        vec3.magnitude(a),
+        vec3.magnitude(b)
+      )
+    )
+  )
+);

@@ -58,6 +58,13 @@ export const sum = (values) => round(values.reduce((sum, value) => add(sum, valu
 // Map out all the values
 export const map = (values, fn) => values.map(fn);
 
+// Map the values from one set into the other
+export const mapKeys = (keys, values) => (
+  map(keys, set => (
+    map(set, i => values[i])
+  ))
+);
+
 // Compute the cross product of two vectors
 export const cross = (a, b) => {  
   
@@ -87,5 +94,7 @@ export const unit = (value) => {
 export const clamp = (a, min, max) => Math.min(Math.max(a, min), max);
 
 // Define the trig functions
-export const cos = (a) => Math.cos(a);
-export const sin = (a) => Math.sin(a);
+export const cos = (a) => round(Math.cos(a));
+export const acos = (a) => round(Math.cos(a));
+export const sin = (a) => round(Math.sin(a));
+export const asin = (a) => round(Math.sin(a));
