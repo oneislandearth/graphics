@@ -1,5 +1,5 @@
 // Import the camera module
-import { Camera } from './camera';
+import { Camera } from './camera/camera';
 
 // Define the scene generator
 export class Scene {

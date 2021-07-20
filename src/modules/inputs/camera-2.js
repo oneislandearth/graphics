@@ -1,5 +1,5 @@
 // Import the required math
-import { add, subtract, multiply, divide, clamp } from '../math';
+import { add, subtract, multiply, divide, clamp } from '../math/vec3';
 
 // Import the events listeners
 import { pointer } from '../core/listeners';

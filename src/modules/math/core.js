@@ -16,6 +16,15 @@ export const divide = (a, b) => round(a / b);
 // Describe the negate function
 export const negate = (value) => multiply(value, -1);
 
+// Describe the half function
+export const half = (value) => multiply(value, 0.5);
+
+// Describe the double function
+export const double = (value) => multiply(value, 2);
+
+// Describe the third function
+export const third = (value) => divide(value, 3);
+
 // Describe the absolute function
 export const abs = (value) => round(Math.abs(value));
 
@@ -45,6 +54,9 @@ export const equal = (a, b) => abs(a - b) <= (max(abs(a), abs(b)) * 1e-4);
 
 // Describe the sum function
 export const sum = (values) => round(values.reduce((sum, value) => add(sum, value), 0));
+
+// Map out all the values
+export const map = (values, fn) => values.map(fn);
 
 // Compute the cross product of two vectors
 export const cross = (a, b) => {  

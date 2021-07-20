@@ -1,8 +1,8 @@
 // Import the required math
-import { add, multiply, sin, cos } from './math';
+import { add, multiply, sin, cos } from '../math';
 
 // Import the input handler
-import { cameraInputManager } from './inputs/camera-2';
+import { cameraInputManager } from './input';
 
 // Describe the basic field of view camera
 export class Camera {

@@ -1,5 +1,5 @@
 // Import the required math
-import { subtract, multiply, divide } from '../math';
+import { subtract, multiply, divide } from '../math/vec3';
 
 
 export const cameraInputManager = ((scene) => {

@@ -2,7 +2,7 @@
 import { Material } from './material/material';
 
 // Import the required math functions
-import { unit, cross, subtract, equal } from './math';
+import { unit, cross, subtract, equal, vec3, gon3, polyhedron } from './math';
 
 // Define the mesh
 export class Mesh {
@@ -47,12 +47,6 @@ export class Mesh {
 
     // Translate the position to the model position
     mat4.translate(model, model, this.position);
-    
-    // Rotate around the y axis
-    // mat4.rotate(model, model, (Math.PI / 4), [0, 1, 0]);
-
-    // // // Rotate around the z axis
-    // mat4.rotate(model, model, (Math.PI / 4), [0, 0, 1]);
 
     // Return the model matrix
     return model;
@@ -121,17 +115,18 @@ export class Mesh {
       const v1 = this.vertices[f1];
       const v2 = this.vertices[f2];
 
-      // Extract the vector components
-      const [v0x, v0y, v0z] = v0;
-      const [v1x, v1y, v1z] = v1;
-      const [v2x, v2y, v2z] = v2;
-
       // Compute the new vectors
-      const v0v2 = [subtract(v0x, v2x), subtract(v0y, v2y), subtract(v0z, v2z)];
-      const v1v2 = [subtract(v1x, v2x), subtract(v1y, v2y), subtract(v1z, v2z)];
+      const v0v2 = vec3.subtract(v0, v2); 
+      const v1v2 = vec3.subtract(v1, v2);
 
       // Compute the unit vector using the unit of the cross product of the new vectors
       const normal = unit(cross(v0v2, v1v2));
+
+      console.log(normal);
+
+      console.log(gon3.area([v0, v1, v2]));
+
+      if (normal.find(v => v == -1)) continue;
 
       // Add the vertices to the positions (one for each face)
       const iv0 = addPosition(v0, normal);
