@@ -1,5 +1,5 @@
 // Create the engine
-const engine = new Engine('#engine', async({ canvas, context }) => {
+const engine = Engine('#engine', async({ canvas, context }) => {
 
   // Create a scene
   const scene = new Scene('scene', { canvas, context });

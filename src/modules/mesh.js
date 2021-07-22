@@ -1,6 +1,9 @@
 // Import the color material
 import { Material } from './material/material';
 
+// Import the buffers
+import { BufferManager } from './context/buffer';
+
 // Import the required math functions
 import { unit, cross, equal, vec3, polyhedron } from './math';
 
@@ -150,42 +153,12 @@ export class Mesh {
   // Define the buffers
   get buffers() {
 
-    // Select the engine context
-    const context = this.scene.context;
-
-    // Create the positions buffer
-    const positionsBuffer = context.createBuffer();
-
-    // Bind the positions buffer
-    context.bindBuffer(context.ARRAY_BUFFER, positionsBuffer);
-    
-    // Add the positions data to the positions buffer
-    context.bufferData(context.ARRAY_BUFFER, new Float32Array(this.positions.flat()), context.STATIC_DRAW);
-
-    // Create the normals buffer
-    const normalsBuffer = context.createBuffer();
-    
-    // Bind the positions buffer
-    context.bindBuffer(context.ARRAY_BUFFER, normalsBuffer);
-    
-    // Add the normals data to the normals buffer
-    context.bufferData(context.ARRAY_BUFFER, new Float32Array(this.normals.flat()), context.STATIC_DRAW);
-    
-    // Define the indices buffer
-    const indicesBuffer = context.createBuffer();
-    
-    // Bind the indices buffer
-    context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, indicesBuffer);
-    
-    // Add the indices data to the indices buffer
-    context.bufferData(context.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), context.STATIC_DRAW);
-
-    // Return the buffers
-    return {
-      positions: positionsBuffer,
-      normals: normalsBuffer,
-      indices: indicesBuffer
-    };
+    // Create the buffer manager
+    return BufferManager(this.scene.context).createBuffers({
+      positions: this.positions,
+      normals: this.normals,
+      indices: this.indices
+    });
   }
 
   // Define the add material class
