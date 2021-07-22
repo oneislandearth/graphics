@@ -42,7 +42,7 @@ export const BufferManager = (context) => {
     context.bindBuffer(INDICES_ARRAY, buffer);
       
     // Add the data to the buffer
-    context.bufferData(INDICES_ARRAY, new Float32Array(values.flat()), STATIC_DRAW);
+    context.bufferData(INDICES_ARRAY, new Uint16Array(values.flat()), STATIC_DRAW);
   
     // Return the buffer
     return buffer;
